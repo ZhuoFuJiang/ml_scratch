@@ -31,6 +31,9 @@ class SquareLoss(Loss):
     def gradient(self, y, y_pred):
         return -(y - y_pred)
 
+    def hess(self, y, y_pred):
+        return np.ones(np.shape(y_pred))
+
 
 class CrossEntropy(Loss):
     def __init__(self):
@@ -46,3 +49,7 @@ class CrossEntropy(Loss):
     def gradient(self, y, p):
         p = np.clip(p, 1e-15, 1 - 1e-15)
         return -(y / p) + (1 - y) / (1 - p)
+
+    def hess(self, y, p):
+        p = np.clip(p, 1e-15, 1 - 1e-15)
+        return (p * (1 - p) - (1 - 2 * p) * (p - y)) / (p ** 2 * (1 - p) ** 2)
